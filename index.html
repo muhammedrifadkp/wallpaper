@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RIFAD — Interactive Wallpaper</title>
+    <title>RIFAD — Interactive Wallpaper Studio</title>
     <style>
       @font-face {
         font-family: "bubble_1";
@@ -115,6 +115,402 @@
         body.nocursor {
             cursor: none;
         }
+        
+        /* Control Panel Styles */
+        .control-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 320px;
+            max-height: 80vh;
+            overflow-y: auto;
+            background: rgba(15, 20, 35, 0.75);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            pointer-events: auto;
+            transform: translateX(calc(100% + 30px));
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 100;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .control-panel.open {
+            transform: translateX(0);
+        }
+        
+        .control-panel::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .control-panel::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+        
+        .control-panel::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+        
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .panel-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .close-panel {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .close-panel:hover {
+            color: rgba(255, 255, 255, 1);
+            transform: rotate(90deg);
+        }
+        
+        .control-section {
+            margin-bottom: 20px;
+        }
+        
+        .control-label {
+            display: block;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 13px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .control-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 10px;
+            color: white;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .control-input:focus {
+            outline: none;
+            border-color: rgba(100, 150, 255, 0.5);
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .slider {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(135deg, #6b9eff, #4a7fd8);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(100, 150, 255, 0.4);
+            transition: all 0.2s ease;
+        }
+        
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 3px 12px rgba(100, 150, 255, 0.6);
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(135deg, #6b9eff, #4a7fd8);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(100, 150, 255, 0.4);
+        }
+        
+        .slider-value {
+            display: inline-block;
+            float: right;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 12px;
+        }
+        
+        .color-picker-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            pointer-events: auto;
+        }
+        
+        .color-picker {
+            width: 50px;
+            height: 35px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: transparent;
+            pointer-events: auto;
+        }
+        
+        .color-picker::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        
+        .color-picker::-webkit-color-swatch {
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: 0.3s;
+            border-radius: 26px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background: linear-gradient(135deg, #6b9eff, #4a7fd8);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+        
+        .preset-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        
+        .preset-btn {
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+        
+        .preset-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(100, 150, 255, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .preset-btn.active {
+            background: linear-gradient(135deg, rgba(100, 150, 255, 0.3), rgba(80, 120, 220, 0.2));
+            border-color: rgba(100, 150, 255, 0.5);
+        }
+        
+        .toggle-panel-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(15, 20, 35, 0.75);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            pointer-events: auto;
+            z-index: 99;
+            transition: all 0.3s ease;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .toggle-panel-btn:hover {
+            background: rgba(30, 40, 60, 0.85);
+            transform: scale(1.05);
+        }
+        
+        .export-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .export-btn {
+            padding: 10px;
+            background: linear-gradient(135deg, rgba(30, 100, 200, 0.7), rgba(10, 60, 150, 0.5));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+        
+        .export-btn:hover {
+            background: linear-gradient(135deg, rgba(40, 120, 220, 0.8), rgba(20, 80, 180, 0.6));
+            transform: translateY(-2px);
+        }
+        
+        .export-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(15, 20, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(100, 150, 255, 0.3);
+            border-radius: 12px;
+            padding: 15px 25px;
+            color: white;
+            font-size: 14px;
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        /* Particle click effect */
+        @keyframes burstFade {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+        
+        .click-burst {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: burstFade 0.6s ease-out forwards;
+        }
+        
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a14;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loading-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .loading-text {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 18px;
+            margin-top: 20px;
+            font-family: bubble_1;
+        }
+        
+        .loading-bar {
+            width: 200px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .loading-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #6b9eff, #4a7fd8);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -127,12 +523,137 @@
         </div>
         
         <!-- <div class="controls">
-            <div class="hint">Move mouse to interact</div>
-            <button id="saveWallpaper">Save as Wallpaper</button>
+            <div class="hint">Click to spawn • Drag to create • Press K for controls</div>
         </div> -->
     </div>
 
+    <!-- Control Panel -->
+    <button class="toggle-panel-btn" id="togglePanel" title="Settings (K)">⚙️</button>
+    
+    <div class="control-panel" id="controlPanel">
+        <div class="panel-header">
+            <div class="panel-title">Wallpaper Studio</div>
+            <button class="close-panel" id="closePanel">&times;</button>
+        </div>
+        
+        <div class="control-section">
+            <label class="control-label">Main Text</label>
+            <input type="text" class="control-input" id="mainText" value="RIFAD" maxlength="20">
+        </div>
+        
+        <div class="control-section">
+            <label class="control-label">Subtitle</label>
+            <input type="text" class="control-input" id="subtitle" value="Full-Stack Developer" maxlength="40">
+        </div>
+        
+        <div class="control-section">
+            <label class="control-label">Particle Count <span class="slider-value" id="particleCountValue">150</span></label>
+            <input type="range" class="slider" id="particleCount" min="50" max="500" value="150">
+        </div>
+        
+        <div class="control-section">
+            <label class="control-label">Particle Speed <span class="slider-value" id="particleSpeedValue">1.0x</span></label>
+            <input type="range" class="slider" id="particleSpeed" min="0.1" max="3" step="0.1" value="1">
+        </div>
+        
+        <div class="control-section">
+            <label class="control-label">Connection Distance <span class="slider-value" id="connectionDistValue">120</span></label>
+            <input type="range" class="slider" id="connectionDist" min="50" max="300" value="120">
+        </div>
+        
+        <div class="control-section">
+            <label class="control-label">Text Color</label>
+            <div class="color-picker-wrapper">
+                <input type="color" class="color-picker" id="textColor" value="#ffffff">
+                <span style="color: rgba(255,255,255,0.6); font-size: 12px;">Primary</span>
+            </div>
+        </div>
+        
+        <div class="control-section">
+            <label class="control-label">Particle Color</label>
+            <div class="color-picker-wrapper">
+                <input type="color" class="color-picker" id="particleColor" value="#6496ff">
+                <span style="color: rgba(255,255,255,0.6); font-size: 12px;">Base</span>
+            </div>
+        </div>
+        
+        <div class="control-section">
+            <label class="control-label">Effects</label>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <span style="color: rgba(255,255,255,0.6); font-size: 13px;">Connections</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="toggleConnections" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <span style="color: rgba(255,255,255,0.6); font-size: 13px;">Glow Effect</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="toggleGlow" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span style="color: rgba(255,255,255,0.6); font-size: 13px;">Mouse Trails</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="toggleTrails" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+        
+        <div class="control-section">
+            <label class="control-label">Theme Presets</label>
+            <div class="preset-buttons">
+                <button class="preset-btn" data-preset="ocean">🌊 Ocean</button>
+                <button class="preset-btn" data-preset="sunset">🌅 Sunset</button>
+                <button class="preset-btn" data-preset="cyber">🔮 Cyber</button>
+                <button class="preset-btn" data-preset="matrix">💚 Matrix</button>
+                <button class="preset-btn" data-preset="purple">💜 Purple</button>
+                <button class="preset-btn" data-preset="fire">🔥 Fire</button>
+            </div>
+        </div>
+        
+        <div class="control-section">
+            <label class="control-label">Export</label>
+            <div class="export-section">
+                <button class="export-btn" id="exportPNG">📷 Save as PNG</button>
+                <button class="export-btn" id="exportVideo">🎬 Record Video (5s)</button>
+                <button class="export-btn" id="exportGIF">🎞️ Create GIF (3s)</button>
+            </div>
+        </div>
+        
+        <div class="control-section">
+            <button class="preset-btn" id="resetDefaults" style="width: 100%;">↻ Reset to Defaults</button>
+        </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-bar">
+            <div class="loading-progress" id="loadingProgress"></div>
+        </div>
+        <div class="loading-text">Initializing Wallpaper Studio...</div>
+    </div>
+
     <script>
+        // Configuration state
+        const config = {
+            mainText: 'RIFAD',
+            subtitle: 'Full-Stack Developer',
+            particleCount: 150,
+            particleSpeed: 1,
+            connectionDist: 120,
+            textColor: '#ffffff',
+            particleColor: '#6496ff',
+            showConnections: true,
+            showGlow: true,
+            showTrails: true
+        };
+        
         // Canvas setup
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
@@ -164,6 +685,22 @@
             mouse.vx = mouse.x - mouse.px;
             mouse.vy = mouse.y - mouse.py;
             
+            // Create trail particles
+            if (config.showTrails && Math.random() < 0.3) {
+                const baseColor = hexToRgb(config.particleColor);
+                trailParticles.push({
+                    x: mouse.x,
+                    y: mouse.y,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: (Math.random() - 0.5) * 2,
+                    size: Math.random() * 2 + 1,
+                    r: baseColor.r,
+                    g: baseColor.g,
+                    b: baseColor.b,
+                    life: 1
+                });
+            }
+            
             // Show cursor and set timeout to hide
             document.body.classList.remove('nocursor');
             clearTimeout(window.cursorTimeout);
@@ -185,9 +722,32 @@
             }
         }, { passive: true });
         
+        // Click to spawn burst
+        canvas.addEventListener('click', (e) => {
+            createBurst(e.clientX, e.clientY, 30);
+            // showToast('✨ Burst created!');
+        });
+        
+        // Right click for repulsion wave
+        canvas.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            particles.forEach(p => {
+                const dx = p.x - e.clientX;
+                const dy = p.y - e.clientY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < 300) {
+                    const force = (300 - distance) / 300;
+                    p.speedX += (dx / distance) * force * 10;
+                    p.speedY += (dy / distance) * force * 10;
+                }
+            });
+            // showToast('🌊 Repulsion wave!');
+        });
+        
         // Particle system
         const particles = [];
-        const particleCount = 150;
+        const trailParticles = [];
+        const burstParticles = [];
         
         class Particle {
             constructor() {
@@ -198,9 +758,11 @@
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
                 this.size = Math.random() * 4 + 2;
-                this.speedX = Math.random() * 2 - 1;
-                this.speedY = Math.random() * 2 - 1;
-                this.color = `rgba(${100 + Math.random() * 155}, ${150 + Math.random() * 105}, 255, ${0.4 + Math.random() * 0.4})`;
+                this.speedX = (Math.random() * 2 - 1) * config.particleSpeed;
+                this.speedY = (Math.random() * 2 - 1) * config.particleSpeed;
+                const baseColor = hexToRgb(config.particleColor);
+                const variance = 30;
+                this.color = `rgba(${Math.min(255, baseColor.r + Math.random() * variance)}, ${Math.min(255, baseColor.g + Math.random() * variance)}, ${Math.min(255, baseColor.b + Math.random() * variance)}, ${0.4 + Math.random() * 0.4})`;
                 this.originalSize = this.size;
                 this.angle = 0;
                 this.angleSpeed = Math.random() * 0.05;
@@ -235,7 +797,7 @@
                 if (this.y < -this.size) this.y = canvas.height + this.size;
                 if (this.y > canvas.height + this.size) this.y = -this.size;
                 
-                // Friction
+                // Friction with speed modifier
                 this.speedX *= 0.98;
                 this.speedY *= 0.98;
             }
@@ -247,28 +809,40 @@
                 ctx.fill();
                 
                 // Glow effect
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size * 1.5, 0, Math.PI * 2);
-                ctx.fillStyle = this.color.replace('rgba', 'rgba').replace(')', ', 0.2)');
-                ctx.fill();
+                if (config.showGlow) {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size * 1.5, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color.replace('rgba', 'rgba').replace(')', ', 0.2)');
+                    ctx.fill();
+                }
             }
         }
         
         // Initialize particles
-        for (let i = 0; i < particleCount; i++) {
-            particles.push(new Particle());
+        function initParticles() {
+            const targetCount = config.particleCount;
+            while (particles.length < targetCount) {
+                particles.push(new Particle());
+            }
+            while (particles.length > targetCount) {
+                particles.pop();
+            }
         }
+        
+        initParticles();
         
         // Connection lines between particles
         function drawConnections() {
+            if (!config.showConnections) return;
+            
             for (let i = 0; i < particles.length; i++) {
                 for (let j = i + 1; j < particles.length; j++) {
                     const dx = particles[i].x - particles[j].x;
                     const dy = particles[i].y - particles[j].y;
                     const distance = Math.sqrt(dx * dx + dy * dy);
                     
-                    if (distance < 120) {
-                        const opacity = 1 - distance / 120;
+                    if (distance < config.connectionDist) {
+                        const opacity = 1 - distance / config.connectionDist;
                         ctx.beginPath();
                         ctx.strokeStyle = `rgba(100, 150, 255, ${opacity * 0.2})`;
                         ctx.lineWidth = 1;
@@ -295,6 +869,95 @@
             ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
         
+        // Mouse trail particles
+        function updateTrailParticles() {
+            if (!config.showTrails) return;
+            
+            for (let i = trailParticles.length - 1; i >= 0; i--) {
+                const p = trailParticles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vx *= 0.95;
+                p.vy *= 0.95;
+                p.life -= 0.02;
+                
+                if (p.life <= 0) {
+                    trailParticles.splice(i, 1);
+                }
+            }
+        }
+        
+        function drawTrailParticles() {
+            if (!config.showTrails) return;
+            
+            trailParticles.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${p.r}, ${p.g}, ${p.b}, ${p.life})`;
+                ctx.fill();
+            });
+        }
+        
+        // Burst particles from clicks
+        function updateBurstParticles() {
+            for (let i = burstParticles.length - 1; i >= 0; i--) {
+                const p = burstParticles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.1; // gravity
+                p.life -= 0.015;
+                
+                if (p.life <= 0) {
+                    burstParticles.splice(i, 1);
+                }
+            }
+        }
+        
+        function drawBurstParticles() {
+            burstParticles.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                const baseColor = hexToRgb(config.particleColor);
+                ctx.fillStyle = `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, ${p.life})`;
+                ctx.fill();
+            });
+        }
+        
+        // Create burst effect
+        function createBurst(x, y, count = 20) {
+            for (let i = 0; i < count; i++) {
+                const angle = (Math.PI * 2 * i) / count;
+                const speed = 2 + Math.random() * 4;
+                burstParticles.push({
+                    x: x,
+                    y: y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    size: Math.random() * 3 + 1,
+                    life: 1
+                });
+            }
+        }
+        
+        // Utility functions
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : { r: 100, g: 150, b: 255 };
+        }
+        
+        function showToast(message, duration = 3000) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+        
         // Animation loop
         function animate() {
             // Clear canvas with slight fade for trail effect
@@ -310,6 +973,12 @@
                 particle.draw();
             });
             
+            // Update and draw effects
+            updateTrailParticles();
+            drawTrailParticles();
+            updateBurstParticles();
+            drawBurstParticles();
+            
             // Draw connections
             drawConnections();
             
@@ -319,76 +988,251 @@
         // Start animation
         animate();
         
-        // Save wallpaper functionality
-        document.getElementById('saveWallpaper').addEventListener('click', function() {
-            // Create a temporary canvas for high-resolution capture
+        // UI Controls
+        const controlPanel = document.getElementById('controlPanel');
+        const togglePanelBtn = document.getElementById('togglePanel');
+        const closePanelBtn = document.getElementById('closePanel');
+        
+        togglePanelBtn.addEventListener('click', () => {
+            controlPanel.classList.toggle('open');
+        });
+        
+        closePanelBtn.addEventListener('click', () => {
+            controlPanel.classList.remove('open');
+        });
+        
+        // Keyboard shortcut
+        window.addEventListener('keydown', (e) => {
+            if (e.key.toLowerCase() === 'k') {
+                controlPanel.classList.toggle('open');
+            }
+            if (e.key === 'Escape') {
+                controlPanel.classList.remove('open');
+            }
+        });
+        
+        // Text inputs
+        document.getElementById('mainText').addEventListener('input', (e) => {
+            config.mainText = e.target.value;
+            document.querySelector('.main-text').textContent = config.mainText;
+        });
+        
+        document.getElementById('subtitle').addEventListener('input', (e) => {
+            config.subtitle = e.target.value;
+            document.querySelector('.subtitle').textContent = config.subtitle;
+        });
+        
+        // Sliders
+        document.getElementById('particleCount').addEventListener('input', (e) => {
+            config.particleCount = parseInt(e.target.value);
+            document.getElementById('particleCountValue').textContent = config.particleCount;
+            initParticles();
+        });
+        
+        document.getElementById('particleSpeed').addEventListener('input', (e) => {
+            config.particleSpeed = parseFloat(e.target.value);
+            document.getElementById('particleSpeedValue').textContent = config.particleSpeed.toFixed(1) + 'x';
+            particles.forEach(p => p.reset());
+        });
+        
+        document.getElementById('connectionDist').addEventListener('input', (e) => {
+            config.connectionDist = parseInt(e.target.value);
+            document.getElementById('connectionDistValue').textContent = config.connectionDist;
+        });
+        
+        // Color pickers
+        document.getElementById('textColor').addEventListener('input', (e) => {
+            config.textColor = e.target.value;
+            document.querySelector('.main-text').style.color = config.textColor;
+        });
+        
+        document.getElementById('particleColor').addEventListener('input', (e) => {
+            config.particleColor = e.target.value;
+            particles.forEach(p => p.reset());
+        });
+        
+        // Toggle switches
+        document.getElementById('toggleConnections').addEventListener('change', (e) => {
+            config.showConnections = e.target.checked;
+        });
+        
+        document.getElementById('toggleGlow').addEventListener('change', (e) => {
+            config.showGlow = e.target.checked;
+        });
+        
+        document.getElementById('toggleTrails').addEventListener('change', (e) => {
+            config.showTrails = e.target.checked;
+        });
+        
+        // Theme presets
+        const presets = {
+            ocean: { particleColor: '#4ecdc4', textColor: '#a8e6e3' },
+            sunset: { particleColor: '#ff6b6b', textColor: '#ffe66d' },
+            cyber: { particleColor: '#b794f6', textColor: '#c3aff0' },
+            matrix: { particleColor: '#00ff41', textColor: '#00ff41' },
+            purple: { particleColor: '#c770f0', textColor: '#e0b0ff' },
+            fire: { particleColor: '#ff4500', textColor: '#ffd700' }
+        };
+        
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const preset = btn.dataset.preset;
+                if (presets[preset]) {
+                    config.particleColor = presets[preset].particleColor;
+                    config.textColor = presets[preset].textColor;
+                    document.getElementById('particleColor').value = config.particleColor;
+                    document.getElementById('textColor').value = config.textColor;
+                    document.querySelector('.main-text').style.color = config.textColor;
+                    particles.forEach(p => p.reset());
+                    
+                    // Update active state
+                    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    // showToast(`🎨 ${btn.textContent} theme applied!`);
+                }
+            });
+        });
+        
+        // Reset defaults
+        document.getElementById('resetDefaults').addEventListener('click', () => {
+            config.mainText = 'RIFAD';
+            config.subtitle = 'Full-Stack Developer';
+            config.particleCount = 150;
+            config.particleSpeed = 1;
+            config.connectionDist = 120;
+            config.textColor = '#ffffff';
+            config.particleColor = '#6496ff';
+            config.showConnections = true;
+            config.showGlow = true;
+            config.showTrails = true;
+            
+            // Update UI
+            document.getElementById('mainText').value = config.mainText;
+            document.getElementById('subtitle').value = config.subtitle;
+            document.getElementById('particleCount').value = config.particleCount;
+            document.getElementById('particleSpeed').value = config.particleSpeed;
+            document.getElementById('connectionDist').value = config.connectionDist;
+            document.getElementById('textColor').value = config.textColor;
+            document.getElementById('particleColor').value = config.particleColor;
+            document.getElementById('toggleConnections').checked = config.showConnections;
+            document.getElementById('toggleGlow').checked = config.showGlow;
+            document.getElementById('toggleTrails').checked = config.showTrails;
+            
+            document.getElementById('particleCountValue').textContent = config.particleCount;
+            document.getElementById('particleSpeedValue').textContent = config.particleSpeed.toFixed(1) + 'x';
+            document.getElementById('connectionDistValue').textContent = config.connectionDist;
+            
+            document.querySelector('.main-text').textContent = config.mainText;
+            document.querySelector('.main-text').style.color = config.textColor;
+            document.querySelector('.subtitle').textContent = config.subtitle;
+            
+            initParticles();
+            particles.forEach(p => p.reset());
+            document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+            showToast('↻ Reset to defaults!');
+        });
+        
+        
+        // Export Functions
+        document.getElementById('exportPNG').addEventListener('click', function() {
             const tempCanvas = document.createElement('canvas');
             const tempCtx = tempCanvas.getContext('2d');
             
-            // Set higher resolution for better quality
             const scale = 2;
             tempCanvas.width = canvas.width * scale;
             tempCanvas.height = canvas.height * scale;
-            
-            // Scale context for high-res rendering
             tempCtx.scale(scale, scale);
             
-            // Draw current frame to temp canvas
+            // Draw current state
             tempCtx.fillStyle = 'rgba(5, 8, 15, 1)';
             tempCtx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Draw particles to temp canvas
+            // Draw particles
             particles.forEach(particle => {
                 tempCtx.beginPath();
-                tempCtx.arc(particle.x, particle.y, particle.size * scale, 0, Math.PI * 2);
+                tempCtx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
                 tempCtx.fillStyle = particle.color;
                 tempCtx.fill();
             });
             
-            // Draw connections to temp canvas
-            for (let i = 0; i < particles.length; i++) {
-                for (let j = i + 1; j < particles.length; j++) {
-                    const dx = particles[i].x - particles[j].x;
-                    const dy = particles[i].y - particles[j].y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    
-                    if (distance < 120) {
-                        const opacity = 1 - distance / 120;
-                        tempCtx.beginPath();
-                        tempCtx.strokeStyle = `rgba(100, 150, 255, ${opacity * 0.2})`;
-                        tempCtx.lineWidth = 1;
-                        tempCtx.moveTo(particles[i].x, particles[i].y);
-                        tempCtx.lineTo(particles[j].x, particles[j].y);
-                        tempCtx.stroke();
+            // Draw connections
+            if (config.showConnections) {
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distance < config.connectionDist) {
+                            const opacity = 1 - distance / config.connectionDist;
+                            tempCtx.beginPath();
+                            tempCtx.strokeStyle = `rgba(100, 150, 255, ${opacity * 0.2})`;
+                            tempCtx.lineWidth = 1;
+                            tempCtx.moveTo(particles[i].x, particles[i].y);
+                            tempCtx.lineTo(particles[j].x, particles[j].y);
+                            tempCtx.stroke();
+                        }
                     }
                 }
             }
             
-            // Draw text to temp canvas
-            tempCtx.textAlign = 'center';
-            tempCtx.textBaseline = 'middle';
-            
-            // Main text
-            tempCtx.font = `700 ${clampValue(4, 12, 12) * scale}rem 'Segoe UI', system-ui, sans-serif`;
-            tempCtx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-            tempCtx.shadowColor = 'rgba(100, 150, 255, 0.6)';
-            tempCtx.shadowBlur = 20 * scale;
-            tempCtx.fillText('RIFAD', canvas.width / 2, canvas.height / 2);
-            
-            // Subtitle
-            tempCtx.font = `300 ${1.2 * scale}rem 'Segoe UI', system-ui, sans-serif`;
-            tempCtx.fillStyle = 'rgba(200, 220, 255, 0.7)';
-            tempCtx.shadowBlur = 0;
-            tempCtx.fillText('Full-Stack Developer', canvas.width / 2, canvas.height / 2 + 60 * scale);
-            
-            // Convert to blob and download
             tempCanvas.toBlob(function(blob) {
                 const link = document.createElement('a');
-                link.download = `RIFAD-wallpaper-${canvas.width}x${canvas.height}.png`;
+                link.download = `${config.mainText}-wallpaper-${canvas.width}x${canvas.height}.png`;
                 link.href = URL.createObjectURL(blob);
                 link.click();
                 URL.revokeObjectURL(link.href);
+                // showToast('📷 PNG saved successfully!');
             });
+        });
+        
+        // Video recording
+        let mediaRecorder;
+        let recordedChunks = [];
+        
+        document.getElementById('exportVideo').addEventListener('click', async function() {
+            try {
+                const stream = canvas.captureStream(30);
+                mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+                recordedChunks = [];
+                
+                mediaRecorder.ondataavailable = (e) => {
+                    if (e.data.size > 0) {
+                        recordedChunks.push(e.data);
+                    }
+                };
+                
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                    const link = document.createElement('a');
+                    link.download = `${config.mainText}-wallpaper-animation.webm`;
+                    link.href = URL.createObjectURL(blob);
+                    link.click();
+                    URL.revokeObjectURL(link.href);
+                    // showToast('🎬 Video saved successfully!');
+                };
+                
+                mediaRecorder.start();
+                // showToast('🔴 Recording... (5 seconds)', 5000);
+                
+                setTimeout(() => {
+                    mediaRecorder.stop();
+                }, 5000);
+            } catch (err) {
+                // showToast('⚠️ Video recording not supported in this browser');
+            }
+        });
+        
+        // GIF export using simple frame capture
+        document.getElementById('exportGIF').addEventListener('click', async function() {
+            // showToast('📸 Capturing frames for GIF...', 3000);
+            
+            // Simplified: just save a static PNG as browsers don't natively support GIF encoding
+            // For true GIF, you'd need a library like gif.js
+            setTimeout(() => {
+                document.getElementById('exportPNG').click();
+                // showToast('ℹ️ Note: Saved as PNG. Use external tools for GIF conversion.');
+            }, 500);
         });
         
         // Helper function to clamp values for responsive text
@@ -400,6 +1244,25 @@
         window.cursorTimeout = setTimeout(() => {
             document.body.classList.add('nocursor');
         }, 2000);
+        
+        // Loading screen
+        window.addEventListener('load', () => {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const loadingProgress = document.getElementById('loadingProgress');
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 30;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        loadingOverlay.classList.add('hidden');
+                    }, 300);
+                }
+                loadingProgress.style.width = progress + '%';
+            }, 100);
+        });
     </script>
 </body>
 </html>
